@@ -1,6 +1,6 @@
 /*global window:false, setTimeout:true, console:true */
 /*
-Copyright (C) 2013-2015 Good Code and Cookie Banner contributors
+Copyright (C) 2013-2018 Good Code and Cookie Banner contributors
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -235,15 +235,26 @@ THE SOFTWARE.
             this.inserted = false;
             this.closed = false;
 
-            var default_text = 'We use cookies to enhance your experience. ' +
-                'By continuing to visit this site you agree to our use of cookies.';
-            var default_link = 'Learn more';
+            var default_text = 'Our website uses cookies to analyse how the site is used and to ensure your experience is consistent between visits.';
+            var default_link = 'Learn more »';
+            var default_closeStyle = [
+                'font-size: inherit;',
+                'float: right;',
+                'margin-left: 10px;',
+                'padding: 5px 10px 5px 15px;',
+                'border: 2px solid rgba(255, 255, 255, 0.65);',
+                'border-radius: 12px;',
+                'line-height: normal;',
+                'background-color: transparent;',
+                'color: currentColor;'
+            ].join('');
+            var default_closeText = 'Accept';
 
             this.default_options = {
                 // autorun: true,
                 cookie: 'cookiebanner-accepted',
-                closeText: '&#10006;',
-                closeStyle: 'float:right;padding-left:5px;',
+                closeText: default_closeText,
+                closeStyle: default_closeStyle,
                 closePrecedes: true,
                 cookiePath: '/',
                 cookieDomain: null,
@@ -257,14 +268,14 @@ THE SOFTWARE.
                 height: 'auto',
                 minHeight: '21px',
                 bg: '#000',
-                fg: '#ddd',
-                link: '#aaa',
+                fg: '#fff',
+                link: 'currentColor',
                 position: 'bottom',
                 message: default_text,
                 linkmsg: default_link,
                 moreinfo: 'http://aboutcookies.org',
                 moreinfoTarget: '_blank',
-                moreinfoRel: 'noopener noreferrer',
+                moreinfoRel: 'noopener noreferrer nofollow',
                 moreinfoDecoration: 'none',
                 moreinfoFontWeight: 'normal',
                 moreinfoFontSize: null,
@@ -440,9 +451,12 @@ THE SOFTWARE.
                 el.style.bottom = 0;
             }
 
-            var closeHtml = '<div class="cookiebanner-close" style="' + this.options.closeStyle + '">' +
-                this.options.closeText + '</div>';
-            var messageHtml = '<span>' + this.options.message + (this.options.linkmsg ? ' <a>' + this.options.linkmsg + '</a>' : '') + '</span>';
+            var checkboxIcon = '<svg xmlns="http://www.w3.org/2000/svg" style="padding-left: 10px; vertical-align: middle;" width="18" height="17" viewBox="0 0 18 17"><path fill-rule="evenodd" fill="currentColor" d="M17.756 2.096l-8.597 8.5a.784.784 0 0 1-.553.226c-.2 0-.4-.075-.553-.226L5.709 8.278a.765.765 0 0 1 0-1.093.787.787 0 0 1 1.105 0l1.792 1.772 8.045-7.953a.787.787 0 0 1 1.105 0 .766.766 0 0 1 0 1.092zm-6.287.052a7.065 7.065 0 0 0-2.859-.603h-.004c-3.877 0-7.032 3.117-7.034 6.951-.002 3.834 3.151 6.956 7.03 6.959h.004c3.877 0 7.032-3.118 7.034-6.951v-.718c0-.427.35-.773.782-.773.432 0 .781.346.781.773v.718C17.201 13.19 13.344 17 8.606 17h-.005C3.86 16.997.006 13.181.009 8.495.011 3.81 3.868 0 8.606 0h.005a8.629 8.629 0 0 1 3.495.736.77.77 0 0 1 .395 1.02.786.786 0 0 1-1.032.392z"></path></svg>';
+
+            var closeHtml = '<button class="cookiebanner-close" style="' + this.options.closeStyle + '">' +
+                this.options.closeText + checkboxIcon + '</button>';
+
+            var messageHtml = '<div style="padding: 0.5em 0;"><span style="opacity: 0.8">' + this.options.message + '</span>' + (this.options.linkmsg ? ' <a style="white-space: nowrap;">' + this.options.linkmsg + '</a>' : '') + '</div>';
 
             if (this.options.closePrecedes) {
                 el.innerHTML = closeHtml + messageHtml;
@@ -468,7 +482,7 @@ THE SOFTWARE.
                 }
             }
 
-            var el_x = el.getElementsByTagName('div')[0];
+            var el_x = el.getElementsByTagName('button')[0];
             el_x.style.cursor = 'pointer';
 
             function on(el, ev, fn) {
